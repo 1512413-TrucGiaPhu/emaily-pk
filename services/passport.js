@@ -23,17 +23,14 @@ passport.use(new GoogleStrategy({
     clientSecret: keys.googleCLientSecret,
     callbackURL: '/auth/google/callback',
     proxy: true
-}, (accessToken, refreshToken, profile, email, done) => {
-    User.findOne({ googleId: email.id })
-        .then((existingUser) => {
-            if (existingUser) {
-                //aldready have a record with the given profile ID
-                done(null, existingUser);
-            } else {
-                // create a javascript object, assign the id value and load it into mongo by save()
-                new User({ googleId: email.id }).save()
-                    .then(user => done(null, user));
-            }
-        })
-    
+}, async (accessToken, refreshToken, profile, email, done) => {
+        const existingUser = await User.findOne({ googleId: email.id });
+        if (existingUser) {
+            //aldready have a record with the given profile ID
+            done(null, existingUser);
+        } else {
+            // create a javascript object, assign the id value and load it into mongo by save()
+            const user = await new User({ googleId: email.id, name: email.displayName }).save();
+            done(null, user);
+        }
 }));
