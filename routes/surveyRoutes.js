@@ -18,7 +18,7 @@ module.exports = app => {
     
   })
 
-  app.get('/api/surveys/:surveyId/:choice', (res,req) => {
+  app.get('/api/surveys/:surveyId/:choice', (req, res) => {
     res.send('Thanks for voting!');
   });
 
